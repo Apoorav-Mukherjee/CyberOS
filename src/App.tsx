@@ -10,7 +10,7 @@ export default function App() {
             <div
                 className="absolute inset-0"
                 style={{
-                    backgroundImage: `url('public/assets/wallpapers/Wallpaper 1.jpg') || url('/assets/wallpapers/Wallpaper 1.jpg')`,
+                    backgroundImage: `url('/assets/wallpapers/Wallpaper 1.jpg')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     // filter: "blur(5px) brightness(0.6)",
