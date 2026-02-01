@@ -15,7 +15,7 @@ import type {
 export const DESKTOP_APPS: {
     id: WindowType;
     label: string;
-    icon?: LucideIcon;
+    icon: LucideIcon;
 }[] = [
         { 
             id: "contact", 
