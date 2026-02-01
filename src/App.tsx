@@ -1,6 +1,7 @@
 import { TopBar } from "./components/TopBar";
 import { Dock } from "./components/Dock";
 import { Desktop } from "./components/Desktop";
+import { ContextMenu } from './components/ContextMenu';
 
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
                 <div className="flex-1 relative">
                     <Desktop />
                     <Dock />
+                    <ContextMenu />
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import type { WindowType } from "../types/window";
+import type { WindowInstance } from "../types/window";
 import {
     User,
     Code2,
@@ -14,8 +15,9 @@ import type {
 
 export const DESKTOP_APPS: {
     id: WindowType;
-    label: string;
+    label: string; 
     icon: LucideIcon;
+    inDock?: WindowInstance['inDock'];
 }[] = [
         { 
             id: "contact", 

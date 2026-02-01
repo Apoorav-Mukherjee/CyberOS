@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import type { WindowInstance, WindowType } from "../types/window";
+import { DESKTOP_APPS } from "../constants/apps";
+
 
 interface WindowStore {
   windows: WindowInstance[];
@@ -12,6 +14,8 @@ interface WindowStore {
   moveWindow: (id: string, x: number, y: number) => void;
   resizeWindow: (id: string, width: number, height: number) => void;
   restoreWindow: (id: string) => void;
+  AddToDock: (id: string) => void;
+  RemoveFromDock: (id: string) => void;
 }
 
 let zCounter = 1;
@@ -41,12 +45,14 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
         {
           id,
           type,
-          title: title ?? type.toUpperCase(),
+          title: title || "",
           isOpen: true,
           isMinimized: false,
           zIndex: zCounter++,
           position: { x: 200, y: 120 },
           size: { width: 480, height: 320 },
+          inDock: true,
+          icon: DESKTOP_APPS.find(app => app.id === type)?.icon!,
         },
       ],
     }));
@@ -90,12 +96,25 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
           : w
       ),
     })),
-    restoreWindow: (id) =>
-  set((state) => ({
-    windows: state.windows.map((w) =>
-      w.id === id
-        ? { ...w, isMinimized: false, isOpen: true }
-        : w
-    ),
-  })),
+  restoreWindow: (id) =>
+    set((state) => ({
+      windows: state.windows.map((w) =>
+        w.id === id
+          ? { ...w, isMinimized: false, isOpen: true }
+          : w
+      ),
+    })),
+  AddToDock: (id) =>
+    set((state) => ({
+      windows: state.windows.map((w) =>
+        w.id === id ? { ...w, inDock: true } : w
+      ),
+    })),
+  RemoveFromDock: (id) =>
+    set((state) => ({
+      windows: state.windows.map((w) =>
+        w.id === id ? { ...w, inDock: false } : w
+      ),
+    })),
+
 }));

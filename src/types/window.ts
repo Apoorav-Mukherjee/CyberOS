@@ -1,3 +1,5 @@
+import { DESKTOP_APPS } from "../constants/apps";
+
 export type WindowType =
   | 'about'
   | 'skills'
@@ -14,6 +16,8 @@ export interface WindowInstance {
   isOpen: boolean;
   isMinimized: boolean;
   zIndex: number;
+  inDock: boolean;
   position: { x: number; y: number };
   size: { width: number; height: number };
+  icon: typeof DESKTOP_APPS[number]['icon'];
 }
