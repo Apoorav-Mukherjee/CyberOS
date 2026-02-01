@@ -82,6 +82,7 @@ export function ContextMenu() {
                             RemoveFromDock(appId);
                             closeMenu();
                         }} />
+                        
                     </>
                 )}
             </div>

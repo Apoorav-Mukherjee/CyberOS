@@ -19,7 +19,7 @@ export function Dock() {
                             key={app.id}
                             title={app.label}
                             className="flex flex-col items-center gap-2 text-gray-200 cursor-pointer"
-                            onClick={() => openWindow(app.id)
+                            onClick={() => restoreWindow(app.id)
                             }
                         >
                             <div
