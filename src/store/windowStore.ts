@@ -157,7 +157,7 @@ export const useWindowStore = create<WindowStore>((set) => ({
   RemoveFromDock: (type: WindowType) =>
     set((state) => ({
       windows: state.windows.filter(w =>
-        !(w.type === type && !w.isOpen)
+        !(w.type === type && w.inDock === true)
       ),
     })),
 

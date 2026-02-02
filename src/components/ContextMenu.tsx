@@ -9,6 +9,7 @@ export function ContextMenu() {
     const { RemoveFromDock } = useWindowStore();
     const appId = payload?.appId;
 
+
     if (!isOpen) return null;
 
     return (
@@ -82,7 +83,6 @@ export function ContextMenu() {
                             RemoveFromDock(appId);
                             closeMenu();
                         }} />
-                        
                     </>
                 )}
             </div>
