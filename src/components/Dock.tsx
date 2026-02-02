@@ -11,7 +11,7 @@ export function Dock() {
     return (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-3 flex gap-6">
             {DESKTOP_APPS
-                .filter(app => app.inDock)
+                .filter(app => !windows.some(w => w.type === app.id && w.isOpen))
                 .map(app => {
                     const Icon = app.icon;
                     return (
@@ -19,7 +19,7 @@ export function Dock() {
                             key={app.id}
                             title={app.label}
                             className="flex flex-col items-center gap-2 text-gray-200 cursor-pointer"
-                            onClick={() => restoreWindow(app.id)
+                            onClick={() => openWindow(app.id)
                             }
                         >
                             <div
@@ -49,7 +49,7 @@ export function Dock() {
                     )
                 })}
             {windows
-                .filter((win) => win.inDock === true)
+                .filter((win) => win.inDock === true && win.isOpen === true)
                 .map((win) => {
                     const isMinimized = win.isMinimized;
                     const Icon = win.icon;
@@ -82,6 +82,10 @@ export function Dock() {
                             {/* ● Minimized indicator */}
                             {isMinimized && (
                                 <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-green-400" />
+                            )}
+                            {/* Active / minimized indicator */}
+                            {win.isOpen && (
+                                <span className="absolute -bottom-1 w-2 h-1 rounded-full bg-blue-400" />
                             )}
                         </div>
                     );

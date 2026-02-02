@@ -14,63 +14,75 @@ interface WindowStore {
   moveWindow: (id: string, x: number, y: number) => void;
   resizeWindow: (id: string, width: number, height: number) => void;
   restoreWindow: (id: string) => void;
-  AddToDock: (id: string) => void;
-  RemoveFromDock: (id: string) => void;
+  AddToDock: (type: WindowType) => void;
+  RemoveFromDock: (type: WindowType) => void;
 }
 
 let zCounter = 1;
 
-export const useWindowStore = create<WindowStore>((set, get) => ({
+export const useWindowStore = create<WindowStore>((set) => ({
   windows: [],
 
-  openWindow: (type, title) => {
-    const existing = get().windows.find(w => w.type === type);
+  openWindow: (type: WindowType) => {
+    set((state) => {
+      const existing = state.windows.find(w => w.type === type);
 
-    if (existing) {
-      set(state => ({
-        windows: state.windows.map(w =>
-          w.id === existing.id
-            ? { ...w, isMinimized: false, zIndex: zCounter++ }
-            : w
-        ),
-      }));
-      return;
-    }
+      if (existing) {
 
-    const id = crypto.randomUUID();
-
-    set(state => ({
-      windows: [
-        ...state.windows,
-        {
-          id,
-          type,
-          title: title || "",
-          isOpen: true,
-          isMinimized: false,
-          zIndex: zCounter++,
-          position: { x: 200, y: 120 },
-          size: { width: 480, height: 320 },
-          inDock: true,
-          icon: DESKTOP_APPS.find(app => app.id === type)?.icon!,
-        },
-      ],
-    }));
+        return {
+          windows: state.windows.map(w =>
+            w.type === type
+              ? {
+                ...w,
+                isOpen: true,
+                isMinimized: false,
+                zIndex: zCounter++,
+              }
+              : w
+          ),
+          zCounter: zCounter++,
+        }
+      }
+      return {
+        windows: [
+          ...state.windows,
+          {
+            id: crypto.randomUUID(),
+            type,
+            title: type,
+            isOpen: true,
+            isMinimized: false,
+            inDock: true,
+            zIndex: zCounter++,
+            position: { x: 120, y: 120 },
+            size: { width: 600, height: 450 },
+            icon: DESKTOP_APPS.find(app => app.id === type)?.icon!,
+          },
+        ],
+        zCounter: zCounter++,
+      };
+    });
   },
 
   closeWindow: (id) =>
     set(state => ({
-      windows: state.windows.filter(w => w.id !== id),
+      windows: state.windows.map(w =>
+        w.id === id
+          ? { ...w, isOpen: false, isMinimized: false }
+          : w
+      ),
     })),
+
 
   minimizeWindow: (id) =>
     set(state => ({
       windows: state.windows.map(w =>
         w.id === id
-          ? { ...w, isMinimized: !w.isMinimized }
+          ? { ...w, isMinimized: true }
           : w
       ),
     })),
+
 
   focusWindow: (id) =>
     set(state => ({
@@ -97,23 +109,55 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       ),
     })),
   restoreWindow: (id) =>
-    set((state) => ({
-      windows: state.windows.map((w) =>
+    set(state => ({
+      windows: state.windows.map(w =>
         w.id === id
-          ? { ...w, isMinimized: false, isOpen: true }
+          ? { ...w, isOpen: true, isMinimized: false, zIndex: zCounter++ }
           : w
       ),
     })),
-  AddToDock: (id) =>
+
+  AddToDock: (type: WindowType) =>
+    set((state) => {
+      const existing = state.windows.find(w => w.type === type);
+
+      if (existing) {
+        return {
+          windows: state.windows.map(w =>
+            w.type === type ? { ...w, inDock: true } : w
+          ),
+        };
+      }
+
+      // Create dock-only entry
+      const app = DESKTOP_APPS.find(a => a.id === type);
+
+      if (!app) return state;
+
+      return {
+        windows: [
+          ...state.windows,
+          {
+            id: crypto.randomUUID(),
+            type,
+            title: app.label,
+            isOpen: false,
+            isMinimized: false,
+            zIndex: 0,
+            position: { x: 0, y: 0 },
+            size: { width: 480, height: 320 },
+            inDock: true,
+            icon: app.icon,
+          },
+        ],
+      };
+    }),
+
+
+  RemoveFromDock: (type: WindowType) =>
     set((state) => ({
-      windows: state.windows.map((w) =>
-        w.id === id ? { ...w, inDock: true } : w
-      ),
-    })),
-  RemoveFromDock: (id) =>
-    set((state) => ({
-      windows: state.windows.map((w) =>
-        w.id === id ? { ...w, inDock: false } : w
+      windows: state.windows.filter(w =>
+        !(w.type === type && !w.isOpen)
       ),
     })),
 
