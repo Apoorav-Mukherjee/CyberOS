@@ -6,11 +6,13 @@ export type WindowType =
   | 'projects'
   | 'terminal'
   | 'contact'
-  | 'apps';
-
+  | 'apps'
+  | 'task-manager'
+  ;
 
 export interface WindowInstance {
   id: string;
+  pid: number;   
   type: WindowType;
   title: string;
   isOpen: boolean;

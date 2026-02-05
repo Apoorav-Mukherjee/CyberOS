@@ -56,6 +56,7 @@ export default function TerminalComponent() {
       setLines([]);
       return;
     }
+    
 
     const output = command.run(args);
 

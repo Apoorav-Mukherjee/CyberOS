@@ -125,6 +125,10 @@ export function Window({
         onMouseDown={onDragStart}
       >
         <span>{windoww.title.charAt(0).toUpperCase() + windoww.title.slice(1)}</span>
+        <span className="opacity-60 text-xs">
+          {windoww.title} • pid:{windoww.pid}
+        </span>
+
 
         <div className="flex gap-2">
           <button

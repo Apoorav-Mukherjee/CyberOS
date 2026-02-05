@@ -1,4 +1,5 @@
 import TerminalComponent from "../components/Terminal";
+import TaskManager from "../components/TaskManager";
 
 
 import {
@@ -7,22 +8,24 @@ import {
     // FolderGit2,
     Terminal,
     // Mail,
-    // Grid
+    // Grid,
+    ActivityIcon,
 } from "lucide-react";
 
 export type AppId =
-  | "about"
-  | "skills"
-  | "projects"
-  | "terminal"
-  | "contact"
-  | "apps";
+    | "about"
+    | "skills"
+    | "projects"
+    | "terminal"
+    | "contact"
+    | "apps"
+    | "task-manager";
 
 export interface AppDefinition {
-  id: AppId;
-  label: string;
-  icon: React.ComponentType<any>;
-  component: React.ComponentType;
+    id: AppId;
+    label: string;
+    icon: React.ComponentType<any>;
+    component: React.ComponentType;
 }
 
 export const DESKTOP_APPS: AppDefinition[] = [
@@ -32,6 +35,12 @@ export const DESKTOP_APPS: AppDefinition[] = [
         icon: Terminal,
         component: TerminalComponent,
     },
+    {
+        id: "task-manager",
+        label: "Task Manager",
+        icon: ActivityIcon, // any icon you use
+        component: TaskManager,
+    }
     // { 
     //     id: "about", 
     //     label: "About.exe",

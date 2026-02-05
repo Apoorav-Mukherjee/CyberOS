@@ -29,4 +29,7 @@ export const TERMINAL_COMMANDS: Record<string, TerminalCommand> = {
     description: "Clear terminal",
     run: () => [],
   },
+
+  // You can add more commands here
+  
 };

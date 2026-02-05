@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { WindowInstance, WindowType } from "../types/window";
 import { DESKTOP_APPS } from "../constants/apps";
+import { useProcessStore } from "./processStore";
 
 
 interface WindowStore {
@@ -16,6 +17,7 @@ interface WindowStore {
   restoreWindow: (id: string) => void;
   AddToDock: (type: WindowType) => void;
   RemoveFromDock: (type: WindowType) => void;
+  cleanupTerminatedProcesses: () => void;
 }
 
 let zCounter = 1;
@@ -24,30 +26,21 @@ export const useWindowStore = create<WindowStore>((set) => ({
   windows: [],
 
   openWindow: (type: WindowType) => {
+    const pid = useProcessStore.getState().spawnProcess(type);
+
     set((state) => {
-      const existing = state.windows.find(w => w.type === type);
+      const windowId = crypto.randomUUID();
 
-      if (existing) {
+      useProcessStore
+        .getState()
+        .attachWindow(pid, windowId);
 
-        return {
-          windows: state.windows.map(w =>
-            w.type === type
-              ? {
-                ...w,
-                isOpen: true,
-                isMinimized: false,
-                zIndex: zCounter++,
-              }
-              : w
-          ),
-          zCounter: zCounter++,
-        }
-      }
       return {
         windows: [
           ...state.windows,
           {
-            id: crypto.randomUUID(),
+            id: windowId,
+            pid,
             type,
             title: type,
             isOpen: true,
@@ -59,19 +52,29 @@ export const useWindowStore = create<WindowStore>((set) => ({
             icon: DESKTOP_APPS.find(app => app.id === type)?.icon!,
           },
         ],
-        zCounter: zCounter++,
       };
     });
   },
 
   closeWindow: (id) =>
-    set(state => ({
-      windows: state.windows.map(w =>
-        w.id === id
-          ? { ...w, isOpen: false, isMinimized: false }
-          : w
-      ),
-    })),
+    set((state) => {
+      const win = state.windows.find(w => w.id === id);
+      if (!win) return state;
+
+      const remaining = state.windows.filter(
+        w => w.pid === win.pid && w.id !== id && w.isOpen
+      );
+
+      if (remaining.length === 0) {
+        useProcessStore.getState().killProcess(win.pid);
+      }
+
+      return {
+        windows: state.windows.map(w =>
+          w.id === id ? { ...w, isOpen: false } : w
+        ),
+      };
+    }),
 
 
   minimizeWindow: (id) =>
@@ -119,6 +122,7 @@ export const useWindowStore = create<WindowStore>((set) => ({
 
   AddToDock: (type: WindowType) =>
     set((state) => {
+      const pid = useProcessStore.getState().spawnProcess(type);
       const existing = state.windows.find(w => w.type === type);
 
       if (existing) {
@@ -139,6 +143,7 @@ export const useWindowStore = create<WindowStore>((set) => ({
           ...state.windows,
           {
             id: crypto.randomUUID(),
+            pid,
             type,
             title: app.label,
             isOpen: false,
@@ -159,6 +164,17 @@ export const useWindowStore = create<WindowStore>((set) => ({
       windows: state.windows.filter(w =>
         !(w.type === type && w.inDock === true)
       ),
+    })),
+  cleanupTerminatedProcesses: () =>
+    set(state => ({
+      windows: state.windows.filter(w => {
+        const proc = useProcessStore
+          .getState()
+          .processes
+          .find(p => p.pid === w.pid);
+
+        return proc?.state !== "terminated";
+      }),
     })),
 
 }));
