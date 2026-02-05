@@ -25,6 +25,7 @@ export const TERMINAL_COMMANDS: Record<string, TerminalCommand> = {
       "kill <pid> - Kill a process",
       "taskmgr    - Open Task Manager",
       "clear      - Clear terminal",
+      "exit       - Close terminal",
     ],
   },
 
@@ -168,4 +169,16 @@ export const TERMINAL_COMMANDS: Record<string, TerminalCommand> = {
       return [`Process ${pid} terminated`];
     },
   },
+  exit: {
+    description: "Close terminal",
+    run: () => {
+      const windowStore = useWindowStore.getState();
+      const terminalWindow = windowStore.windows.find(w => w.type === "terminal");
+      if (terminalWindow) {
+        windowStore.closeWindow(terminalWindow.id);
+        return ["Closing terminal..."];
+      }
+      return ["No terminal window to close."];
+    },
+  }
 };
