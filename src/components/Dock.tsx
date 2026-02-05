@@ -1,12 +1,11 @@
 import { DESKTOP_APPS } from "../constants/apps";
 import { useWindowStore } from "../store/windowStore";
-import { useContextMenuStore } from "../store/contextMenuStore";
 
 
 export function Dock() {
 
     const { windows, restoreWindow, openWindow } = useWindowStore();
-    const { openMenu } = useContextMenuStore();
+   
 
     return (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-3 flex gap-6">
@@ -27,17 +26,6 @@ export function Dock() {
                                 className="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/30 transition flex items-center justify-center text-xs text-gray-300"
                                 onContextMenu={(e) => {
                                     e.preventDefault();
-
-                                    const rect = e.currentTarget.getBoundingClientRect();
-
-                                    openMenu(
-                                        'dock-app',
-                                        {
-                                            x: rect.left + rect.width / 2,
-                                            y: rect.top, // 👈 IMPORTANT
-                                        },
-                                        { appId: app.id }
-                                    );
                                 }}
 
                             >
@@ -65,16 +53,6 @@ export function Dock() {
                             onContextMenu={(e) => {
                                 e.preventDefault();
 
-                                const rect = e.currentTarget.getBoundingClientRect();
-
-                                openMenu(
-                                    'dock-app',
-                                    {
-                                        x: rect.left + rect.width / 2,
-                                        y: rect.top, // 👈 IMPORTANT
-                                    },
-                                    { appId: win.id }
-                                );
                             }}
                         >
                             <Icon size={20} />

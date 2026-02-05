@@ -52,9 +52,6 @@ export function Desktop() {
                         position={win.position}
                         size={win.size}
                     >
-                        <div className="text-gray-300">
-                            {win.title} content goes here
-                        </div>
                     </Window>
                 ))}
         </div>

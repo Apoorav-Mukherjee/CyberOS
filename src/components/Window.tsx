@@ -1,11 +1,10 @@
-import type { ReactNode } from 'react';
 import { useRef, useState, useEffect } from 'react';
 import { useWindowStore } from '../store/windowStore';
+import { DESKTOP_APPS } from '../constants/apps';
 
 interface Props {
   windowId: string;
   title: string;
-  children: ReactNode;
   zIndex: number;
   position: { x: number; y: number };
   size: { width: number; height: number };
@@ -13,8 +12,6 @@ interface Props {
 
 export function Window({
   windowId,
-  title,
-  children,
   zIndex,
   position,
   size,
@@ -26,6 +23,13 @@ export function Window({
     moveWindow,
     resizeWindow,
   } = useWindowStore();
+
+  const windoww = useWindowStore(
+    (s) => s.windows.find((w) => w.id === windowId)!
+  );
+
+  const app = DESKTOP_APPS.find((a) => a.id === windoww.type);
+  const AppComponent = app?.component;
 
   const dragOffset = useRef({ x: 0, y: 0 });
   const resizeStart = useRef({ x: 0, y: 0, w: 0, h: 0 });
@@ -120,7 +124,7 @@ export function Window({
         className="h-10 flex items-center justify-between px-3 border-b border-white/10 text-sm cursor-move select-none"
         onMouseDown={onDragStart}
       >
-        <span>{title}</span>
+        <span>{windoww.title.charAt(0).toUpperCase() + windoww.title.slice(1)}</span>
 
         <div className="flex gap-2">
           <button
@@ -136,7 +140,7 @@ export function Window({
 
       {/* ───── Content ───── */}
       <div className="p-4 h-[calc(100%-2.5rem)] overflow-auto">
-        {children}
+        {AppComponent ? <AppComponent /> : <div>App not found</div>}
       </div>
 
       {/* ───── Resize Handle ───── */}

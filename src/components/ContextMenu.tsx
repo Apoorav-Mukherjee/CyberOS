@@ -67,24 +67,11 @@ export function ContextMenu() {
             <div 
                 className="fixed z-50 min-w-[180px] rounded-xl bg-black/80 backdrop-blur-xl border border-white/10 shadow-xl text-sm"
                 style={{
-                    bottom: window.innerHeight - position.y + 8,
+                    // bottom: window.innerHeight - position.y + 8,
                     left: position.x,
                     transform: 'translateX(-50%)',
                 }}
             >
-                {type === 'dock-app' && (
-                    <>
-                        <MenuItem label="Open" onClick={() => {
-                            openWindow(appId);
-                            closeMenu();
-                        }} />
-                        <Divider />
-                        <MenuItem label="Remove from Dock" onClick={() => {
-                            RemoveFromDock(appId);
-                            closeMenu();
-                        }} />
-                    </>
-                )}
             </div>
         </>
     );
