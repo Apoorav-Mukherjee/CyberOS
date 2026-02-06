@@ -3,6 +3,7 @@ import TaskManager from "../components/TaskManager";
 import ContactApp from "../components/contact/ContactApp";
 import AboutApp from "../components/about/AboutApp";
 import FilesApp from "../components/files/FilesApp";
+import SkillsApp from "../components/skills/SkillsApp";
 
 import {
     User,
@@ -12,6 +13,8 @@ import {
     Mail,
     // Grid,
     ActivityIcon,
+    FileSpreadsheet,
+
 } from "lucide-react";
 
 export type AppId =
@@ -61,12 +64,12 @@ export const DESKTOP_APPS: AppDefinition[] = [
         singleton: true,
     },
 
-    // { 
-    //     id: "skills", 
-    //     label: "Skills.sys",
-    //     icon: Code2,
-    //     component: SkillsComponent,
-    // },
+    { 
+        id: "skills", 
+        label: "Skills.sys",
+        icon: FileSpreadsheet,
+        component: SkillsApp,
+    },
 
     { 
         id: "apps", 

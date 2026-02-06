@@ -18,6 +18,8 @@ interface WindowStore {
   AddToDock: (type: WindowType) => void;
   RemoveFromDock: (type: WindowType) => void;
   cleanupTerminatedProcesses: () => void;
+  clearRestoreFlag: (id: string) => void;
+
 }
 
 let zCounter = 1;
@@ -50,6 +52,7 @@ export const useWindowStore = create<WindowStore>((set) => ({
             position: { x: 120, y: 120 },
             size: { width: 600, height: 450 },
             icon: DESKTOP_APPS.find(app => app.id === type)?.icon!,
+            restoreFromDock: false,
           },
         ],
       };
@@ -81,11 +84,11 @@ export const useWindowStore = create<WindowStore>((set) => ({
     set(state => ({
       windows: state.windows.map(w =>
         w.id === id
-          ? { ...w, isMinimized: true }
+          ? { ...w, isMinimized: true, minimizing: true,}
           : w
       ),
     })),
-
+    
 
   focusWindow: (id) =>
     set(state => ({
@@ -115,7 +118,7 @@ export const useWindowStore = create<WindowStore>((set) => ({
     set(state => ({
       windows: state.windows.map(w =>
         w.id === id
-          ? { ...w, isOpen: true, isMinimized: false, zIndex: zCounter++ }
+          ? { ...w, isOpen: true, isMinimized: false, zIndex: zCounter++, restoreFromDock: true }
           : w
       ),
     })),
@@ -176,5 +179,11 @@ export const useWindowStore = create<WindowStore>((set) => ({
         return proc?.state !== "terminated";
       }),
     })),
+  clearRestoreFlag: (id) =>
+  set((state) => ({
+    windows: state.windows.map((w) =>
+      w.id === id ? { ...w, restoreFromDock: false } : w
+    ),
+  })),
 
 }));

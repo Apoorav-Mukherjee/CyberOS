@@ -40,7 +40,20 @@ const initialFS: FileNode = {
       id: "projects",
       name: "Projects",
       type: "folder",
-      children: [],
+      children: [
+        {
+          id: "project1",
+          name: "Project1.txt",
+          type: "file",
+          content: "This is the content of Project1.",
+        },
+        {
+          id: "project2",
+          name: "Project2.txt",
+          type: "file",
+          content: "This is the content of Project2.",
+        },
+      ],
     },
   ],
 };

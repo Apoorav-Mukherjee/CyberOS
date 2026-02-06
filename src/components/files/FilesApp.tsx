@@ -1,5 +1,5 @@
 import { useFileStore } from "../../store/fileStore";
-import { Breadcrumbs } from "./BreadCrumbs";
+import { Breadcrumbs } from "./Breadcrumbs";
 import { FileList } from "./FileList";
 import { FilePreview } from "./FilePreview";
 

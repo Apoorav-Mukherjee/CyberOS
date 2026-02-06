@@ -1,5 +1,6 @@
 import { useFileStore } from "../../store/fileStore";
 import type { FileNode } from "../../store/fileStore";
+import { motion } from "framer-motion";
 
 function resolveFolder(
   root: FileNode,
@@ -25,8 +26,10 @@ export function FileList() {
   return (
     <div className="flex-1 overflow-y-auto">
       {folder.children.map((item) => (
-        <div
-          key={item.id}
+        <motion.div
+          layout
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.12 }}
           onClick={() =>
             item.type === "folder"
               ? openFolder(item.name)
@@ -36,7 +39,7 @@ export function FileList() {
         >
           <span>{item.type === "folder" ? "📁" : "📄"}</span>
           <span>{item.name}</span>
-        </div>
+        </motion.div>
       ))}
     </div>
   );

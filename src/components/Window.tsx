@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { useWindowStore } from '../store/windowStore';
 import { DESKTOP_APPS } from '../constants/apps';
+import { motion } from 'framer-motion';
 
 interface Props {
   windowId: string;
@@ -22,6 +23,7 @@ export function Window({
     minimizeWindow,
     moveWindow,
     resizeWindow,
+    clearRestoreFlag,
   } = useWindowStore();
 
   const windoww = useWindowStore(
@@ -108,7 +110,7 @@ export function Window({
   ========================= */
 
   return (
-    <div
+    <motion.div
       className="absolute bg-black/70 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden"
       style={{
         top: position.y,
@@ -116,6 +118,22 @@ export function Window({
         width: size.width,
         height: size.height,
         zIndex,
+      }}
+      initial={
+        windoww.restoreFromDock
+          ? { opacity: 0, scale: 0.85, y: 40 }
+          : false
+      }
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 25,
+        delay: 0.05,
+      }}
+      onAnimationComplete={() => {
+        clearRestoreFlag(windowId);
       }}
       onMouseDown={() => focusWindow(windowId)}
     >
@@ -152,6 +170,6 @@ export function Window({
         onMouseDown={onResizeStart}
         className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize"
       />
-    </div>
+    </motion.div>
   );
 }

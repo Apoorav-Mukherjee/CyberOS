@@ -1,22 +1,33 @@
 import { DESKTOP_APPS } from "../constants/apps";
 import { useWindowStore } from "../store/windowStore";
-
+import { motion } from "framer-motion";
 
 export function Dock() {
 
     const { windows, restoreWindow, openWindow } = useWindowStore();
-   
+
 
     return (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-3 flex gap-6">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-3 flex gap-6">
             {DESKTOP_APPS
                 .filter(app => !windows.some(w => w.type === app.id && w.isOpen))
                 .map(app => {
                     const Icon = app.icon;
                     return (
-                        <div
+                        <motion.div
                             key={app.id}
                             title={app.label}
+                            whileHover={{ scale: 1.25, y: -6 }}
+                            whileTap={{ scale: 1.1 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 400,
+                                damping: 20,
+                            }}
                             className="flex flex-col items-center gap-2 text-gray-200 cursor-pointer"
                             onClick={() => openWindow(app.id)
                             }
@@ -33,7 +44,7 @@ export function Dock() {
 
                                 {/* <span className="text-xs">{app.label}</span> */}
                             </div>
-                        </div>
+                        </motion.div>
                     )
                 })}
             {windows
@@ -42,8 +53,15 @@ export function Dock() {
                     const isMinimized = win.isMinimized;
                     const Icon = win.icon;
                     return (
-                        <div
+                        <motion.div
                             key={win.id}
+                            whileHover={{ scale: 1.25, y: -6 }}
+                            whileTap={{ scale: 1.1 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 400,
+                                damping: 20,
+                            }}
                             onClick={() =>
                                 isMinimized
                                     ? restoreWindow(win.id)
@@ -55,20 +73,19 @@ export function Dock() {
 
                             }}
                         >
-                            <Icon size={20} />
-
+                                <Icon size={20} />
                             {/* ● Minimized indicator */}
                             {isMinimized && (
-                                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-green-400" />
+                                <motion.span layoutId="dock-active-indicator" className="absolute top-1 right-1 w-2 h-2 rounded-full bg-green-400" />
                             )}
                             {/* Active / minimized indicator */}
                             {win.isOpen && (
-                                <span className="absolute -bottom-1 w-2 h-1 rounded-full bg-blue-400" />
+                                <motion.span layoutId="dock-active-indicator" className="absolute -bottom-1 w-2 h-1 rounded-full bg-blue-400" />
                             )}
-                        </div>
+                        </motion.div>
                     );
                 })}
-        </div>
+        </motion.div>
 
     );
 }

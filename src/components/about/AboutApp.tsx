@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 type Mode = "idle" | "info" | "help";
 
@@ -33,7 +34,12 @@ export default function AboutApp() {
   };
 
   return (
-    <div className="h-full w-full flex flex-col text-white">
+    <motion.div 
+      className="h-full w-full flex flex-col text-white"
+      initial={{ opacity: 0, y: 6}}
+      animate={{ opacity: 1, y: 0}}
+      transition={{ duration: 0.2 }}
+    >
       {/* Header */}
       <div className="border-b border-white/10 px-4 py-3">
         <div className="text-lg font-semibold">CyberOS Search</div>
@@ -91,6 +97,6 @@ export default function AboutApp() {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
