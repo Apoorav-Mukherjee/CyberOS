@@ -23,5 +23,5 @@ export interface WindowInstance {
   size: { width: number; height: number };
   icon: typeof DESKTOP_APPS[number]['icon'];
   restoreFromDock?: boolean;
-
+  minimizing?: boolean;
 }
