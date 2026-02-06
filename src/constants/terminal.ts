@@ -1,6 +1,7 @@
 import { useWindowStore } from "../store/windowStore";
 import { useProcessStore } from "../store/processStore";
-import { BOOT_TIME } from "./system"
+import { BOOT_TIME } from "./system";
+import type { WindowType } from "../types/window";
 
 // src/constants/terminal.ts
 export type CommandResult = string[];
@@ -98,11 +99,11 @@ export const TERMINAL_COMMANDS: Record<string, TerminalCommand> = {
 
       const windowStore = useWindowStore.getState();
 
-      const appMap: Record<string, string> = {
+      const appMap: Record<string, WindowType> = {
         terminal: "terminal",
+        about: "about",
+        contact: "contact",
         taskmgr: "task-manager",
-        browser: "browser",
-        files: "file-explorer",
       };
 
       const appId = appMap[app.toLowerCase()];
